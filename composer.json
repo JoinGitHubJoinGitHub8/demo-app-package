@@ -1,0 +1,21 @@
+{
+  "name": "phpffcms/demo-app-package",
+  "description": "Demo of FFCMS 3 simple application package distributed under composer requirements",
+  "type": "library",
+  "keywords": ["php", "ffcms", "app"],
+  "homepage": "http://ffcms.org",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pyatinskyi M.M.",
+      "email": "zenn1989@gmail.com",
+      "homepage": "http://ffcms.ru"
+    }
+  ],
+  "require": {
+    "php": ">=5.4"
+  },
+  "autoload": {
+    "psr-0": { "Apps\\": "src/" }
+  }
+}

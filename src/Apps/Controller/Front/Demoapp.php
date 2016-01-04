@@ -57,12 +57,20 @@ class Demoapp extends Controller
         return 'Incoming data: id=' . App::$Security->strip_tags($id) . ', add=' . App::$Security->strip_tags($add);
     }
 
+    /**
+     * Page available only for authorized users
+     * @return string
+     * @throws ForbiddenException
+     * @throws \Ffcms\Core\Exception\SyntaxException
+     */
     public function actionAuth()
     {
+        // if user is not authorized - lets throw exception to prohibit access to page content
         if (!App::$User->isAuth()) {
             throw new ForbiddenException('This page available only for authorized users');
         }
 
+        // render response
         return (new View('auth', null, $this->tplDir))->render();
     }
 

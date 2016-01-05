@@ -4,7 +4,7 @@ namespace Apps\Controller\Admin;
 
 use Apps\Model\Admin\Demoapp\FormDemo;
 use Apps\Model\Admin\Demoapp\FormSettings;
-use Extend\Core\Arch\AdminAppController as Controller;
+use Extend\Core\Arch\AdminController as Controller;
 use Apps\ActiveRecord\App as AppRecord;
 use Ffcms\Core\App;
 use Ffcms\Core\Arch\View;

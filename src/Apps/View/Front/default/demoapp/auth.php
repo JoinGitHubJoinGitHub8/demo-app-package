@@ -13,6 +13,7 @@ $this->breadcrumbs = [
 <h1>Demoapp - only authorized</h1>
 <hr />
 <p>Hello! You are authorized user and you can see this page!</p>
+<div class="table-responsive">
 <?= \Ffcms\Core\Helper\HTML\Table::display([
     'table' => ['class' => 'table table-bordered'],
     'thead' => [
@@ -42,3 +43,4 @@ $this->breadcrumbs = [
         ]
     ]
 ]) ?>
+</div>

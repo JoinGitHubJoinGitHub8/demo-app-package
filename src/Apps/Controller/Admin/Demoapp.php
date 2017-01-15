@@ -11,10 +11,11 @@ use Ffcms\Core\Arch\View;
 use Ffcms\Core\Helper\Date;
 use Ffcms\Core\Helper\FileSystem\File;
 use Ffcms\Core\Helper\Serialize;
+use Ffcms\Core\Managers\MigrationsManager;
 
 class Demoapp extends Controller
 {
-    const VERSION = 0.1;
+    const VERSION = '1.0.0';
 
     private $appRoot;
     private $tplDir;
@@ -38,25 +39,24 @@ class Demoapp extends Controller
     /**
      * Demo of usage index page - just render viewer with input params
      * @return string
+     * @throws \Ffcms\Core\Exception\NativeException
      * @throws \Ffcms\Core\Exception\SyntaxException
      */
     public function actionIndex()
     {
         // point-oriented render of output viewer
-        return App::$View->render(
-            'index',
-            [
+        return App::$View->render('index', [
                 'tplPath' => $this->tplDir,
                 'appRoute' => $this->appRoot,
                 'scriptsVersion' => self::VERSION,
                 'dbVersion' => $this->application->version
-            ],
-            $this->tplDir);
+            ], $this->tplDir);
     }
 
     /**
      * Show demo form with validation and dynamic object view initialization
      * @return string
+     * @throws \Ffcms\Core\Exception\NativeException
      * @throws \Ffcms\Core\Exception\SyntaxException
      */
     public function actionForm()
@@ -78,18 +78,17 @@ class Demoapp extends Controller
 
 
         // object-oriented rendering! $this->render is not available inside viewer
-        return (new View(
-            'form',
-            [
+        return (new View('form', [
                 'tplPath' => $this->tplDir,
                 'model' => $model
-            ],
-            $this->tplDir))->render();
+            ], $this->tplDir))->render();
     }
 
     /**
-     *
+     * Show app settings
      * @return string
+     * @throws \Ffcms\Core\Exception\SyntaxException
+     * @throws \Ffcms\Core\Exception\NativeException
      */
     public function actionSettings()
     {
@@ -144,33 +143,24 @@ class Demoapp extends Controller
             'disabled' => 0
         ]);
 
-        // create your own table in database
-        App::$Database->schema()->create('demos', function($table) {
-            $table->increments('id');
-            $table->string('text', 1024);
-            $table->timestamps();
-        });
-
-        $now = Date::convertToDatetime(time(), Date::FORMAT_SQL_DATE);
-        // insert some data in table, id|text columns, id is autoincrement
-        App::$Database->connection()->table('demos')->insert([
-            ['text' => 'Hello world 1', 'created_at' => $now, 'updated_at' => $now],
-            ['text' => 'Hello world 2', 'created_at' => $now, 'updated_at' => $now]
+        $root = realpath(__DIR__ . '/../../../');
+        // implement migrations
+        $manager = new MigrationsManager($root . '/Private/Migrations/');
+        $manager->makeUp([
+            'demo_demo_table-2017-01-14-21-28-49.php'
         ]);
-
-
     }
 
     public static function update($dbVersion)
     {
-        /** use downgrade switch logic without break's. Example: db version is 0.1, but script version is 0.3
-        * so when this function will be runned for 0.1 version will be applied cases 0.1, 0.2, 0.3 */
+        /** use downgrade switch logic without break's. Example: db version is 1.0.0, but script version is 1.0.2
+        * so when this function will be runned for 1.0.0 version will be applied cases 1.0.0, 1.0.1, 1.0.2 */
         switch($dbVersion) {
-            case 0.1:
-                // actions for 0.1 version without break (!!!) will also apply next
-            case 0.2:
-                // actions for 0.2 version aren't take 0.1 but take next ;D
-            case 0.3:
+            case '1.0.0':
+                // actions for 1.0.0 version without break (!!!) will also apply next 1.0.1 and 1.0.2
+            case '1.0.1':
+                // actions for 1.0.1 version aren't take 1.0.0 but take next ;D
+            case '1.0.2':
                 // and next..
             break;
             default:
